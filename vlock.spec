@@ -1,21 +1,16 @@
-%define version	1.3
-%define release %mkrel 16
-
-Summary:	A program which locks one or more virtual consoles
-Name:		vlock
-Version:	%{version}
-Release:	%{release}
-License:	GPL
-Group:		Terminals
-
-URL:		ftp://tsx-11.mit.edu:/pub/linux/sources/usr.bin/
-Source0:	%{name}-%{version}.tar.bz2
-Patch0:		vlock-1.3-system-auth.patch
-Patch1:		vlock-1.3-includes.patch.bz2
-
-Requires:	pam >= 0.59
-BuildRequires:	pam-devel
-BuildRoot:	%{_tmppath}/%name-%version-%release-root
+Name:           vlock
+Version:        1.4
+Release:        %mkrel 1
+Summary:        Locks one or more virtual consoles
+License:        GPL
+Group:          Terminals
+URL:            http://cthulhu.c3d2.de/~toidinamai/vlock/vlock.html
+Source0:        http://cthulhu.c3d2.de/~toidinamai/vlock/archive/vlock-%{version}.tar.bz2
+Patch0:         vlock-1.3-system-auth.patch
+Patch1:         vlock-1.4-install.patch
+Requires:       pam
+BuildRequires:  pam-devel
+BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root
 
 %description
 The vlock program locks one or more sessions on the console.  Vlock
@@ -27,26 +22,28 @@ vlock or the root password is typed.
 Install vlock if you need to disable access to one console or to all
 virtual consoles.
 
-%prep 
+%prep
 %setup -q
-%patch0 -p1 -b .system-auth
-%patch1 -p1 -b .includes
+%patch0 -p1
+%patch1 -p1
 
 %build
-%make RPM_OPT_FLAGS="${RPM_OPT_FLAGS}"
+%{make} CC=%{__cc} CFLAGS="%{optflags} -DUSE_PAM -Wall"
 
 %install
-rm -rf $RPM_BUILD_ROOT
-install -m 755 -D -s vlock $RPM_BUILD_ROOT%{_bindir}/vlock
-install -m 644 -D vlock.1 $RPM_BUILD_ROOT%{_mandir}/man1/vlock.1
-install -m 644 -D vlock.pamd $RPM_BUILD_ROOT%{_sysconfdir}/pam.d/vlock
+%{__rm} -rf %{buildroot}
+
+%{makeinstall} INSTALL=%{__install}
+
+%{__mkdir_p} %{buildroot}%{_sysconfdir}/pam.d
+%{__cp} -a vlock.pamd %{buildroot}%{_sysconfdir}/pam.d/vlock
 
 %clean
-rm -rf $RPM_BUILD_ROOT
+%{__rm} -rf %{buildroot}
 
 %files
-%defattr(-,root,root,-)
-%config(noreplace) %{_sysconfdir}/pam.d/vlock
+%defattr(0644,root,root,0755)
 %doc COPYING README
-%{_bindir}/vlock
+%attr(4711,root,root) %{_bindir}/vlock
 %{_mandir}/man1/vlock.1*
+%config(noreplace) %{_sysconfdir}/pam.d/vlock
