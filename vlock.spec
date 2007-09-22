@@ -1,13 +1,15 @@
 Name:           vlock
-Version:        2.0
-Release:        %mkrel 2
+Version:        2.1
+Release:        %mkrel 1
 Epoch:          0
 Summary:        Program to lock one or more sessions on the Linux console
 License:        GPL
 Group:          Terminals
 URL:            http://cthulhu.c3d2.de/~toidinamai/vlock/vlock.html
 Source0:        http://cthulhu.c3d2.de/~toidinamai/vlock/archive/vlock-%{version}.tar.bz2
-Source1:        %{name}.pamd
+Source1:        http://cthulhu.c3d2.de/~toidinamai/vlock/archive/vlock-%{version}.tar.bz2.md5
+Source2:        http://cthulhu.c3d2.de/~toidinamai/vlock/archive/vlock-%{version}.tar.bz2.sha1
+Source3:        %{name}.pamd
 Requires:       pam
 BuildRequires:  pam-devel
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root
@@ -24,7 +26,7 @@ virtual consoles.
 
 %prep
 %setup -q
-%{__sed} -i -e 's/\$(VLOCK_GROUP)/root/g;' -e 's/ -o root -g root//g;' Makefile
+%{__sed} -i -e 's/\$(VLOCK_GROUP)/root/g;' -e 's/\$(ROOT_GROUP)/root/g;' -e 's/ -o root -g root//g;' Makefile
 %{__sed} -i -e 's|^BOURNE_SHELL =.*|BOURNE_SHELL = %{__sh}|;' -e 's/^CC =.*/CC = %{__cc}/;' -e 's/^CFLAGS = .*/CFLAGS = %{optflags}/;' -e 's|^INSTALL =.*|INSTALL = %{__install}|;' -e 's|^PREFIX =.*|PREFIX = %{_prefix}|;' config.mk
 
 %build
@@ -35,7 +37,7 @@ virtual consoles.
 %{makeinstall_std}
 
 %{__mkdir_p} %{buildroot}%{_sysconfdir}/pam.d
-%{__cp} -a %{SOURCE1}  %{buildroot}%{_sysconfdir}/pam.d/%{name}
+%{__cp} -a %{SOURCE3} %{buildroot}%{_sysconfdir}/pam.d/%{name}
 
 %clean
 %{__rm} -rf %{buildroot}
