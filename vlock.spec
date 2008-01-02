@@ -12,6 +12,7 @@ Source2:        http://cthulhu.c3d2.de/~toidinamai/vlock/archive/vlock-%{version
 Source3:        %{name}.pamd
 Requires:       pam
 BuildRequires:  pam-devel
+BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root
 
 %description
 The vlock program locks one or more sessions on the console.  Vlock
