@@ -1,6 +1,12 @@
-Name:           vlock
-Version:        2.1
-Release:        %mkrel 1
+%define name 	vlock
+%define version 2.2.1
+%define release %mkrel 1
+%define major   0
+%define libname %mklibname vlock %major
+
+Name:           %name
+Version:        %version
+Release:        %release
 Epoch:          0
 Summary:        Program to lock one or more sessions on the Linux console
 License:        GPL
@@ -10,6 +16,7 @@ Source0:        http://cthulhu.c3d2.de/~toidinamai/vlock/archive/vlock-%{version
 Source1:        http://cthulhu.c3d2.de/~toidinamai/vlock/archive/vlock-%{version}.tar.bz2.md5
 Source2:        http://cthulhu.c3d2.de/~toidinamai/vlock/archive/vlock-%{version}.tar.bz2.sha1
 Source3:        %{name}.pamd
+Requires:	%{libname}
 Requires:       pam
 BuildRequires:  pam-devel
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root
@@ -24,12 +31,27 @@ vlock or the root password is typed.
 Install vlock if you need to disable access to one console or to all
 virtual consoles.
 
+%package -n     %{libname}
+Summary:        Dynamic libraries from %name
+Group:          System/Libraries
+
+%description -n %{libname}
+Dynamic libraries from %name.
+
+
 %prep
 %setup -q
 %{__sed} -i -e 's/\$(VLOCK_GROUP)/root/g;' -e 's/\$(ROOT_GROUP)/root/g;' -e 's/ -o root -g root//g;' Makefile
-%{__sed} -i -e 's|^BOURNE_SHELL =.*|BOURNE_SHELL = %{__sh}|;' -e 's/^CC =.*/CC = %{__cc}/;' -e 's/^CFLAGS = .*/CFLAGS = %{optflags}/;' -e 's|^INSTALL =.*|INSTALL = %{__install}|;' -e 's|^PREFIX =.*|PREFIX = %{_prefix}|;' config.mk
+%{__sed} -i -e 's/\$(VLOCK_GROUP)/root/g;' -e 's/\$(MODULE_GROUP)/root/g;' -e 's/ -o root -g root//g;' modules/Makefile
+#%{__sed} -i -e 's|^BOURNE_SHELL =.*|BOURNE_SHELL = %{__sh}|;' -e 's/^CC =.*/CC = %{__cc}/;' -e 's/^CFLAGS = .*/CFLAGS = %{optflags}/;' -e 's|^INSTALL =.*|INSTALL = %{__install}|;' -e 's|^PREFIX =.*|PREFIX = %{_prefix}|;' config.mk
 
 %build
+./configure --prefix=%{_usr}\
+	--bindir=%{_bindir}\
+	--sbindir=%{_sbindir}\
+	--libdir=%{_libdir}\
+	--mandir=%{_mandir}
+
 %{make}
 
 %install
@@ -48,5 +70,11 @@ virtual consoles.
 %attr(-,root,root) %{_bindir}/*
 %attr(-,root,root) %{_sbindir}/*
 %{_mandir}/man1/*.1*
+%{_mandir}/man5/*.5*
 %{_mandir}/man8/*.8*
 %config(noreplace) %{_sysconfdir}/pam.d/%{name}
+
+%files -n %{libname}
+%defattr(-,root,root)
+%{_libdir}/%name/modules/*.so
+
