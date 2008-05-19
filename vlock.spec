@@ -1,12 +1,6 @@
-%define name 	vlock
-%define version 2.2.1
-%define release %mkrel 1
-%define major   0
-%define libname %mklibname vlock %major
-
-Name:           %name
-Version:        %version
-Release:        %release
+Name:           vlock
+Version:        2.2.2
+Release:        %mkrel 1
 Epoch:          0
 Summary:        Program to lock one or more sessions on the Linux console
 License:        GPL
@@ -16,9 +10,9 @@ Source0:        http://cthulhu.c3d2.de/~toidinamai/vlock/archive/vlock-%{version
 Source1:        http://cthulhu.c3d2.de/~toidinamai/vlock/archive/vlock-%{version}.tar.bz2.md5
 Source2:        http://cthulhu.c3d2.de/~toidinamai/vlock/archive/vlock-%{version}.tar.bz2.sha1
 Source3:        %{name}.pamd
-Requires:	%{libname}
 Requires:       pam
 BuildRequires:  pam-devel
+Obsoletes:      %{mklibname vlock 0} <= %{epoch}:%{version}-%{release}
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root
 
 %description
@@ -31,19 +25,10 @@ vlock or the root password is typed.
 Install vlock if you need to disable access to one console or to all
 virtual consoles.
 
-%package -n     %{libname}
-Summary:        Dynamic libraries from %name
-Group:          System/Libraries
-
-%description -n %{libname}
-Dynamic libraries from %name.
-
-
 %prep
 %setup -q
 %{__sed} -i -e 's/\$(VLOCK_GROUP)/root/g;' -e 's/\$(ROOT_GROUP)/root/g;' -e 's/ -o root -g root//g;' Makefile
 %{__sed} -i -e 's/\$(VLOCK_GROUP)/root/g;' -e 's/\$(MODULE_GROUP)/root/g;' -e 's/ -o root -g root//g;' modules/Makefile
-#%{__sed} -i -e 's|^BOURNE_SHELL =.*|BOURNE_SHELL = %{__sh}|;' -e 's/^CC =.*/CC = %{__cc}/;' -e 's/^CFLAGS = .*/CFLAGS = %{optflags}/;' -e 's|^INSTALL =.*|INSTALL = %{__install}|;' -e 's|^PREFIX =.*|PREFIX = %{_prefix}|;' config.mk
 
 %build
 ./configure --prefix=%{_usr}\
@@ -51,30 +36,25 @@ Dynamic libraries from %name.
 	--sbindir=%{_sbindir}\
 	--libdir=%{_libdir}\
 	--mandir=%{_mandir}
-
-%{make}
+%{make} CFLAGS="%{optflags} -std=gnu99"
 
 %install
 %{__rm} -rf %{buildroot}
 %{makeinstall_std}
 
 %{__mkdir_p} %{buildroot}%{_sysconfdir}/pam.d
-%{__cp} -a %{SOURCE3} %{buildroot}%{_sysconfdir}/pam.d/%{name}
+%{__cp} -p %{SOURCE3} %{buildroot}%{_sysconfdir}/pam.d/%{name}
 
 %clean
 %{__rm} -rf %{buildroot}
 
 %files
 %defattr(0644,root,root,0755)
-%doc ChangeLog COPYING README SECURITY
-%attr(-,root,root) %{_bindir}/*
-%attr(-,root,root) %{_sbindir}/*
+%doc ChangeLog COPYING PLUGINS README README.X11 SECURITY STYLE TODO
+%attr(0755,root,root) %{_bindir}/vlock
+%attr(4711,root,root) %{_sbindir}/vlock-main
+%{_libdir}/%{name}
 %{_mandir}/man1/*.1*
 %{_mandir}/man5/*.5*
 %{_mandir}/man8/*.8*
 %config(noreplace) %{_sysconfdir}/pam.d/%{name}
-
-%files -n %{libname}
-%defattr(-,root,root)
-%{_libdir}/%name/modules/*.so
-
