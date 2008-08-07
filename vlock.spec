@@ -1,6 +1,6 @@
 Name:           vlock
 Version:        2.2.2
-Release:        %mkrel 1
+Release:        %mkrel 2
 Epoch:          0
 Summary:        Program to lock one or more sessions on the Linux console
 License:        GPL
