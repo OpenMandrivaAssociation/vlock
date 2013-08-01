@@ -1,6 +1,6 @@
 Name:           vlock
 Version:        2.2.2
-Release:        %mkrel 8
+Release:        MERGED INTO KBD PACKAGE
 Epoch:          0
 Summary:        Program to lock one or more sessions on the Linux console
 License:        GPL
@@ -126,7 +126,7 @@ virtual consoles.
 
 
 
-* Sun Jul 23 2006 Nicolas Lécureuil <neoclust@mandriva.org> 1.3-16mdv2007.0
+* Sun Jul 23 2006 Nicolas LÃ©cureuil <neoclust@mandriva.org> 1.3-16mdv2007.0
 - Rediff P0 for new PAM
 - use mkrel
 
