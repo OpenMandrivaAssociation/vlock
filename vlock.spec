@@ -5,7 +5,7 @@ Epoch:          0
 Summary:        Program to lock one or more sessions on the Linux console
 License:        GPL
 Group:          Terminals
-URL:            http://cthulhu.c3d2.de/~toidinamai/vlock/vlock.html
+URL:            https://cthulhu.c3d2.de/~toidinamai/vlock/vlock.html
 Source0:        http://cthulhu.c3d2.de/~toidinamai/vlock/archive/vlock-%{version}.tar.bz2
 Source1:        http://cthulhu.c3d2.de/~toidinamai/vlock/archive/vlock-%{version}.tar.bz2.md5
 Source2:        http://cthulhu.c3d2.de/~toidinamai/vlock/archive/vlock-%{version}.tar.bz2.sha1
