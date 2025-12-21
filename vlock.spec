@@ -11,6 +11,11 @@ Source1:        http://cthulhu.c3d2.de/~toidinamai/vlock/archive/vlock-%{version
 Source2:        http://cthulhu.c3d2.de/~toidinamai/vlock/archive/vlock-%{version}.tar.bz2.sha1
 Source3:        %{name}.pamd
 Requires:       pam
+BuildRequires:	autoconf
+BuildRequires:	automake
+BuildRequires:	libtool-base
+BuildRequires:	slibtool
+BuildRequires:	make
 BuildRequires:  pam-devel
 Obsoletes:      %{mklibname vlock 0} <= %{epoch}:%{version}-%{release}
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root
